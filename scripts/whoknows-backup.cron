@@ -1,0 +1,7 @@
+# Nightly database backup and 14-day cleanup.
+# Installed to /etc/cron.d/whoknows-backup by deploy.yaml.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+
+0 3 * * * root /usr/local/bin/backup-db.sh /srv/whoknows/data/whoknows.db /home/azureuser/backups/whoknows >> /var/log/whoknows-backup.log 2>&1
+30 3 * * * root find /home/azureuser/backups/whoknows -name "whoknows-*.db" -mtime +14 -delete >> /var/log/whoknows-backup.log 2>&1

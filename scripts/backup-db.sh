@@ -2,7 +2,7 @@
 set -euo pipefail
 umask 077
 
-db_file="${1:-/home/azureuser/whoknows/backend/whoknows.db}"
+db_file="${1:-/srv/whoknows/data/whoknows.db}"
 backup_dir="${2:-/home/azureuser/backups/whoknows}"
 
 db_file=$(realpath -e -- "$db_file")
