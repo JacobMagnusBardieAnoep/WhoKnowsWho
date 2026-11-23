@@ -80,7 +80,7 @@ jobs:
           host: ${{ secrets.AZURE_VM_HOST }}
           username: ${{ secrets.AZURE_VM_USER }}
           key: ${{ secrets.AZURE_VM_SSH_KEY }}
-          source: "compose.yaml,nginx.conf"
+          source: "compose.yaml,nginx.conf,scripts/backup-db.sh,scripts/whoknows-backup.cron"
           target: /srv/whoknows
 
       # The database lives in /srv/whoknows/data on the VM (bind mount) and the secrets in
@@ -105,6 +105,9 @@ jobs:
             # database file created earlier by the root container.
             sudo mkdir -p "$DATA_MOUNT"
             sudo chown -R 10001:10001 "$DATA_MOUNT"
+            # Install the backup job from the repo, so the VM does not depend on hand-made cron lines
+            sudo install -m 755 /srv/whoknows/scripts/backup-db.sh /usr/local/bin/backup-db.sh
+            sudo install -m 644 -o root -g root /srv/whoknows/scripts/whoknows-backup.cron /etc/cron.d/whoknows-backup
             docker compose pull app
 
             # Validate nginx.conf in a throwaway container BEFORE compose touches anything. If
